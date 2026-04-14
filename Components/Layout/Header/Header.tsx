@@ -12,6 +12,7 @@ const Header = () => {
 
         {/* LOGO */}
 <div className="text-xl font-extrabold bg-gradient-to-r from-cyan-500 to-blue-600 text-transparent bg-clip-text cursor-pointer">
+    <img src="	https://www.texnoland.az/images/logos/logo.png" alt="" />
   Texnoland.az
 </div>
         {/* MENU */}
