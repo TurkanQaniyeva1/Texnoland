@@ -2,6 +2,8 @@
 
 import CurrencyRates from "@/Components/Home/CurrencyRates/CurrencyRates";
 import DataSlider from "@/Components/Home/DataSlider/DataSlider";
+import Partners from "@/Components/Home/Partners/Partners";
+import Portfolio from "@/Components/Home/Portfolio/Portdolio";
 import ProjectsSection from "@/Components/Home/ProjectSection/ProjectSection";
 import SolarCalculator from "@/Components/Home/SolarCalculator/SolarCalculator";
 import Footer from "@/Components/Layout/Footer/Footer";
@@ -73,6 +75,8 @@ export default function Home() {
       <ProjectsSection />
       <SolarCalculator/>
       <CurrencyRates/>
+      <Partners/>
+      <Portfolio/>
       <Footer />
     </div>
   );
