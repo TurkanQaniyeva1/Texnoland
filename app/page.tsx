@@ -1,6 +1,9 @@
 "use client";
 
+import CurrencyRates from "@/Components/Home/CurrencyRates/CurrencyRates";
 import DataSlider from "@/Components/Home/DataSlider/DataSlider";
+import ProjectsSection from "@/Components/Home/ProjectSection/ProjectSection";
+import SolarCalculator from "@/Components/Home/SolarCalculator/SolarCalculator";
 import Footer from "@/Components/Layout/Footer/Footer";
 import Header from "@/Components/Layout/Header/Header";
 
@@ -27,46 +30,50 @@ const data = [
 export default function Home() {
   return (
     <div >
- <Header/>
- <DataSlider/>
-    <section className="bg-black text-white py-20">
-      <div className="max-w-[1200px] mx-auto px-4">
+      <Header />
+      <DataSlider />
+      <section className="bg-black text-white py-20">
+        <div className="max-w-[1200px] mx-auto px-4">
 
-        {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-          {data.map((item, i) => (
-            <div
-              key={i}
-              className="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-lg hover:border-cyan-500 transition overflow-hidden"
-            >
+            {data.map((item, i) => (
+              <div
+                key={i}
+                className="group relative p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-lg hover:border-cyan-500 transition overflow-hidden"
+              >
 
-              {/* GLOW */}
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition"></div>
+                {/* GLOW */}
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition"></div>
 
-              {/* CONTENT */}
-              <div className="relative z-10">
+                {/* CONTENT */}
+                <div className="relative z-10">
 
-                {/* ICON PLACEHOLDER */}
-                <div className="w-12 h-12 mb-4 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600"></div>
+                  {/* ICON PLACEHOLDER */}
+                  <div className="w-12 h-12 mb-4 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600"></div>
 
-                <h3 className="text-lg font-semibold mb-3 group-hover:text-cyan-400 transition">
-                  {item.title}
-                </h3>
+                  <h3 className="text-lg font-semibold mb-3 group-hover:text-cyan-400 transition">
+                    {item.title}
+                  </h3>
 
-                <p className="text-gray-400 text-sm leading-6">
-                  {item.desc}
-                </p>
+                  <p className="text-gray-400 text-sm leading-6">
+                    {item.desc}
+                  </p>
 
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+
+          </div>
 
         </div>
-
-      </div>
-    </section>
-    <Footer/>
+      </section>
+      <ProjectsSection />
+      <ProjectsSection />
+      <SolarCalculator/>
+      <CurrencyRates/>
+      <Footer />
     </div>
   );
 }
