@@ -1,51 +1,49 @@
 "use client";
+import React, { useState } from "react";
 
-import React from 'react'
-import TopBar from '../TopBar/TopBar';
+import { serviceItems, companyItems, infoItems } from "../../../Constants/data";
+import DropdownMenu from "../DropDown/DropDownMenu";
+import MobileMenu from "../MobilMenu/MobilMenu";
 
 const Header = () => {
-  return (
-<div className="bg-white/70 backdrop-blur-lg border-b sticky top-0 z-50">
-    <TopBar/>
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-      <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4 py-4">
+  return (
+    <div className="bg-white/70 backdrop-blur-lg border-b sticky top-0 z-50">
+
+      <div className="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-4">
 
         {/* LOGO */}
-<div className="text-xl font-extrabold bg-gradient-to-r from-cyan-500 to-blue-600 text-transparent bg-clip-text cursor-pointer">
-    <img src="	https://www.texnoland.az/images/logos/logo.png" alt="" />
-  Texnoland.az
-</div>
-        {/* MENU */}
-        <ul className="hidden md:flex items-center gap-6 text-sm font-medium">
- <li className="relative cursor-pointer group">
-  Əsas səhifə
-  <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-cyan-500 transition-all duration-300 group-hover:w-full"></span>
-</li>
-          <li className="hover:text-cyan-500 cursor-pointer transition">Xidmətlər</li>
-          <li className="hover:text-cyan-500 cursor-pointer transition">Layihələr</li>
-          <li className="hover:text-cyan-500 cursor-pointer transition">Şirkətimiz</li>
-          <li className="hover:text-cyan-500 cursor-pointer transition">Məlumatlar</li>
+        <div className="font-bold text-lg">Texnoland</div>
 
-<li className="relative px-4 py-2 rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white cursor-pointer overflow-hidden group">
-  <span className="relative z-10">Təklif Alın</span>
+        {/* DESKTOP */}
+        <ul className="hidden lg:flex gap-6 text-sm">
+          <li>Əsas səhifə</li>
 
-  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition"></span>
-</li>
-          <li className="hover:text-cyan-500 cursor-pointer transition">Əlaqə</li>
+          <DropdownMenu title="Xidmətlər" items={serviceItems} />
+          <DropdownMenu title="Şirkətimiz" items={companyItems} />
+          <DropdownMenu title="Məlumatlar" items={infoItems} />
+
+          <li>Əlaqə</li>
         </ul>
 
-        {/* LANGUAGE */}
-        <div className="hidden md:block">
-          <select className="outline-none text-sm cursor-pointer">
-            <option>AZ</option>
-            <option>RU</option>
-            <option>EN</option>
-          </select>
-        </div>
-
+        {/* MOBILE BTN */}
+        <button onClick={() => setMobileOpen(true)} className="lg:hidden">
+          ☰
+        </button>
       </div>
-    </div>
-  )
-}
 
-export default Header
+      <MobileMenu
+        isOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        data={{
+          services: serviceItems,
+          company: companyItems,
+          info: infoItems,
+        }}
+      />
+    </div>
+  );
+};
+
+export default Header;

@@ -8,6 +8,7 @@ import ProjectsSection from "@/Components/Home/ProjectSection/ProjectSection";
 import SolarCalculator from "@/Components/Home/SolarCalculator/SolarCalculator";
 import Footer from "@/Components/Layout/Footer/Footer";
 import Header from "@/Components/Layout/Header/Header";
+import TopBar from "@/Components/Layout/TopBar/TopBar";
 
 const data = [
   {
@@ -32,6 +33,7 @@ const data = [
 export default function Home() {
   return (
     <div >
+      <TopBar/>
       <Header />
       <DataSlider />
       <section className="bg-black text-white py-20">
