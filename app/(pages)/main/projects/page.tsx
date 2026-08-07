@@ -1,151 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Footer from "@/Components/Layout/Footer/Footer";
-import TopBar from "@/Components/Layout/TopBar/TopBar";
-import Header from "@/Components/Layout/Header/Header";
-
-type Project = {
-  id: number;
-  title: string;
-  location: string;
-  image: string;
-};
-
-const allProjects: Project[] = Array.from({ length: 24 }, (_, i) => ({
-  id: i,
-  title: `Premium Layihə ${i + 1}`,
-  location: "Bakı, Azərbaycan",
-  image: `https://picsum.photos/600/400?random=${i}`,
-}));
+import { movies } from "@/lib/mockData";
 
 const ITEMS_PER_PAGE = 6;
 
 export default function Projects() {
   const [page, setPage] = useState(1);
 
-  const totalPages = Math.ceil(allProjects.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(movies.length / ITEMS_PER_PAGE);
 
-  const current = allProjects.slice(
-    (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
-  );
+  const current = useMemo(() => movies.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE), [page]);
 
   return (
-<>
-<TopBar/>
-<Header/>
-<main>
-        <section className="relative py-20 px-4 bg-gradient-to-b from-white to-gray-100 overflow-hidden">
-      
-      {/* Glow background */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-red-500/10 blur-[120px] rounded-full" />
-
-      <div className="relative max-w-7xl mx-auto">
-
-        {/* Title */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Layihələrimiz
-          </h2>
-          <p className="text-gray-500 mt-3 text-sm md:text-base">
-            Ən son və innovativ layihələrimizə baxın
-          </p>
+    <main className="min-h-screen bg-slate-950 px-4 py-16 text-slate-100 lg:px-8">
+      <section className="mx-auto max-w-7xl">
+        <div className="mb-10 text-center">
+          <p className="text-sm uppercase tracking-[0.35em] text-cyan-400">Projects</p>
+          <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">Premium layihələr və təkliflər</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-400">Bütün bloklar tam responsive, animasiyalı və premium görünüşdə qurulub.</p>
         </div>
 
-        {/* Grid */}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={page}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ duration: 0.4 }}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10"
-          >
-            {current.map((project) => (
-              <motion.div
-                key={project.id}
-                whileHover={{ y: -8 }}
-                className="group relative rounded-2xl overflow-hidden bg-white/70 backdrop-blur-xl border border-white/40 shadow-lg"
-              >
-                {/* Image */}
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    className="w-full h-[240px] object-cover transition duration-700 group-hover:scale-110"
-                  />
-
-                  {/* Gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80" />
-
-                  {/* Hover overlay content */}
-                  <div className="absolute bottom-0 p-5 text-white">
-                    <h3 className="text-lg font-semibold">
-                      {project.title}
-                    </h3>
-                    <p className="text-sm text-gray-200">
-                      {project.location}
-                    </p>
+          <motion.div key={page} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }} className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {current.map((project, index) => (
+              <motion.article key={project.id} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-900/70 shadow-2xl shadow-slate-950/30">
+                <img src={project.image} alt={project.title} className="h-56 w-full object-cover" />
+                <div className="p-6">
+                  <div className="flex items-center justify-between text-sm text-slate-400">
+                    <span>{project.year}</span>
+                    <span>{(project.rating ?? 4.8).toFixed(1)} ★</span>
+                  </div>
+                  <h2 className="mt-3 text-xl font-semibold text-white">{project.title}</h2>
+                  <p className="mt-3 text-sm leading-7 text-slate-400">{project.description}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {project.genre.map((genre) => (<span key={genre} className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-xs text-cyan-300">{genre}</span>))}
                   </div>
                 </div>
-
-                {/* Bottom */}
-                <div className="p-4 flex justify-between items-center">
-                  <span className="text-xs text-gray-500">
-                    {project.location}
-                  </span>
-
-                  <button className="text-red-500 text-sm font-medium relative group">
-                    Ətraflı
-                    <span className="block h-[2px] w-0 bg-red-500 transition-all group-hover:w-full"></span>
-                  </button>
-                </div>
-              </motion.div>
+              </motion.article>
             ))}
           </motion.div>
         </AnimatePresence>
 
-        {/* Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-16 flex-wrap">
-
-          {/* Prev */}
-          <button
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            className="w-10 h-10 flex items-center justify-center rounded-full border bg-white shadow hover:shadow-md transition"
-          >
-            ←
-          </button>
-
-          {/* Numbers */}
+        <div className="mt-12 flex flex-wrap justify-center gap-3">
+          <button onClick={() => setPage((p) => Math.max(p - 1, 1))} className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/20">←</button>
           {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`w-10 h-10 rounded-full text-sm font-medium transition ${
-                page === i + 1
-                  ? "bg-red-500 text-white shadow-lg scale-110"
-                  : "bg-white border hover:bg-gray-100"
-              }`}
-            >
+            <button key={i} onClick={() => setPage(i + 1)} className={`h-10 w-10 rounded-full text-sm font-medium transition ${page === i + 1 ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white" : "border border-white/10 bg-white/10 text-slate-300"}`}>
               {i + 1}
             </button>
           ))}
-
-          {/* Next */}
-          <button
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            className="w-10 h-10 flex items-center justify-center rounded-full border bg-white shadow hover:shadow-md transition"
-          >
-            →
-          </button>
+          <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))} className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-slate-200 transition hover:bg-white/20">→</button>
         </div>
-
-      </div>
-    </section>
-</main>
-<Footer/>
-</>
+      </section>
+    </main>
   );
 }
