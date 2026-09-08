@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 lg:grid-cols-3 lg:px-8">
         <div>
           <p className="text-sm uppercase tracking-[0.35em] text-cyan-400">Texnoland</p>
-          <p className="mt-4 max-w-sm text-sm text-slate-400">Premium frontend təcrübəsi, modern dizayn və interaktiv məzmunla hazırlanmış dizayn sistemi.</p>
+          <p className="mt-4 max-w-sm text-sm text-slate-400">2015-ci ildən elektroenergetika, bərpa olunan enerji və mühəndislik sahələrində etibarlı texnoloji həllər.</p>
         </div>
         {footerLinks.map((section) => (
           <div key={section.title}>
