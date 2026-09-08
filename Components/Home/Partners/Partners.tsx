@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 const partners = [
   "/images/f-logo1.png",
   "/images/omega.png",
@@ -21,7 +23,7 @@ export default function Partners() {
               key={i}
               className="w-[120px] h-[60px] flex items-center justify-center opacity-60 hover:opacity-100 hover:scale-110 transition duration-300"
             >
-              <img src={logo} className="object-contain" />
+              <Image src={logo} alt={`Texnoland tərəfdaşı ${i + 1}`} width={120} height={60} className="object-contain" />
             </div>
           ))}
 

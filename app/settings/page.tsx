@@ -4,7 +4,7 @@ import { useApp } from "@/Components/providers/AppProvider";
 import { Button } from "@/Components/ui/Button";
 
 export default function SettingsPage() {
-  const { notificationsEnabled, toggleNotifications, theme, setTheme } = useApp();
+  const { notificationsEnabled, toggleNotifications } = useApp();
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-16 text-slate-100 lg:px-8">
@@ -18,13 +18,6 @@ export default function SettingsPage() {
               <p className="text-sm text-slate-400">Bildirişləri aktiv/deaktiv edin.</p>
             </div>
             <Button onClick={toggleNotifications} variant="secondary">{notificationsEnabled ? "Aktiv" : "Deaktiv"}</Button>
-          </div>
-          <div className="flex items-center justify-between rounded-[1.25rem] border border-white/10 bg-slate-950/60 p-4">
-            <div>
-              <p className="font-medium text-white">Tema</p>
-              <p className="text-sm text-slate-400">Dark/light mode dəyişdirin.</p>
-            </div>
-            <Button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} variant="secondary">{theme === "dark" ? "Dark" : "Light"}</Button>
           </div>
         </div>
       </div>

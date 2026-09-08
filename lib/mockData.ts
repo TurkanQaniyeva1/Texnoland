@@ -61,12 +61,73 @@ export const faqItems = [
   { question: "Həllər beynəlxalq standartlara uyğun mudur?", answer: "Bəli. Bütün işlərdə zəmanət və keyfiyyət standartları prioritet hesab olunur." },
 ];
 
-export const navItems = [
-  { label: "Ana səhifə", href: "/" },
-  { label: "Haqqımızda", href: "/about" },
-  { label: "Xidmətlər", href: "/services" },
+export type NavItem = {
+  label: string;
+  href: string;
+  children?: NavItem[];
+};
+
+export const navItems: NavItem[] = [
+  { label: "Əsas səhifə", href: "/" },
+  {
+    label: "Xidmətlər",
+    href: "/services",
+    children: [
+      { label: "Bərpa olunan enerji", href: "/services/renewable-energy", children: [
+        { label: "Günəş panelləri", href: "/services/solar-panels" },
+        { label: "Külək turbinləri", href: "/services/wind-turbines" },
+        { label: "Günəş enerjili işıqlandırma", href: "/services/solar-lighting" },
+        { label: "Günəş enerjili suvarma", href: "/services/solar-irrigation" },
+        { label: "GES servis xidməti", href: "/services/solar-maintenance" },
+      ] },
+      { label: "Elektrik şəbəkələri və yarımstansiyalar", href: "/services/electrical-grids", children: [
+        { label: "Yüksək gərginlikli şəbəkələr", href: "/services/high-voltage" },
+        { label: "Alçaq gərginlikli şəbəkələr", href: "/services/low-voltage" },
+        { label: "Elektrik şəbəkələrinin qurulması", href: "/services/grid-construction" },
+      ] },
+      { label: "Mühəndis kommunikasiya", href: "/services/engineering-communications", children: [
+        { label: "Binalarda kommunikasiya", href: "/services/building-communications" },
+        { label: "Ağıllı şəbəkə və avtomatika", href: "/services/smart-automation" },
+      ] },
+      { label: "Servis və məsləhət", href: "/services/consulting", children: [
+        { label: "Ölçü və sınaq işləri", href: "/services/testing" },
+        { label: "Layihələndirmə və qiymətləndirmə", href: "/services/design" },
+        { label: "Texniki məsləhət", href: "/services/technical-consulting" },
+      ] },
+      { label: "İnşaat işləri", href: "/services/construction", children: [
+        { label: "Fərdi mənzil inşaatı", href: "/services/residential-construction" },
+        { label: "Təmir işləri", href: "/services/renovation" },
+      ] },
+      { label: "Enerji auditi", href: "/services/energy-audit" },
+      { label: "Sayğacların quraşdırılması", href: "/services/meters" },
+    ],
+  },
   { label: "Layihələr", href: "/projects" },
-  { label: "Sertifikatlar", href: "/certificates" },
+  {
+    label: "Şirkətimiz",
+    href: "/about",
+    children: [
+      { label: "Haqqımızda", href: "/about" },
+      { label: "Məqsədimiz", href: "/about/mission" },
+      { label: "Zəmanət", href: "/about/warranty" },
+      { label: "Lisenziya və sertifikatlar", href: "/certificates" },
+      { label: "Sosial məsuliyyət", href: "/about/social-responsibility" },
+      { label: "Ətraf mühit", href: "/about/environment" },
+    ],
+  },
+  {
+    label: "Məlumatlar",
+    href: "/discover",
+    children: [
+      { label: "Texnoloji yeniliklər", href: "/discover" },
+      { label: "Bərpa olunan enerji", href: "/discover/renewable-energy" },
+      { label: "Günəş enerjisi", href: "/discover/solar-energy" },
+      { label: "Külək enerjisi", href: "/discover/wind-energy" },
+      { label: "Tez-tez verilən suallar", href: "/faq" },
+      { label: "Günəş kalkulyatoru", href: "/calculator" },
+    ],
+  },
+  { label: "Təklif alın", href: "/quote" },
   { label: "Əlaqə", href: "/contact" },
 ];
 

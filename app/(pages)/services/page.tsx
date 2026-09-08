@@ -1,0 +1,6 @@
+import Link from "next/link";
+import { companyServices } from "@/lib/companyData";
+
+export default function ServicesPage() {
+  return <main className="min-h-screen bg-slate-950 px-4 py-16 text-slate-100 lg:px-8"><div className="mx-auto max-w-7xl"><p className="text-sm uppercase tracking-[0.35em] text-emerald-400">Xidmətlər</p><h1 className="mt-3 max-w-3xl text-4xl font-semibold sm:text-5xl">Enerji və mühəndislik üçün tam həllər</h1><p className="mt-5 max-w-2xl text-slate-400">Layihənin ilk ideyasından istismara və sonrakı servisə qədər Texnoland yanınızdadır.</p><div className="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{companyServices.map((service) => <Link key={service.slug} href={`/services/${service.slug}`} className="group border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-1 hover:border-emerald-400/60 hover:bg-emerald-400/[0.08]"><span className="text-sm font-semibold text-emerald-400">{service.icon}</span><h2 className="mt-8 text-xl font-semibold">{service.title}</h2><p className="mt-3 text-sm leading-7 text-slate-400">{service.summary}</p><span className="mt-6 inline-block text-sm font-semibold text-emerald-300">Ətraflı bax →</span></Link>)}</div></div></main>;
+}

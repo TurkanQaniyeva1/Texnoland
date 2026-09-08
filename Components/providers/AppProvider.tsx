@@ -1,12 +1,11 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-
-type ThemeMode = "dark" | "light";
+import { createContext, startTransition, useContext, useEffect, useMemo, useState } from "react";
 
 type Profile = {
   name: string;
   email: string;
+  phone: string;
   bio: string;
   avatar: string;
   plan: string;
@@ -14,8 +13,6 @@ type Profile = {
 };
 
 type AppContextValue = {
-  theme: ThemeMode;
-  setTheme: (theme: ThemeMode) => void;
   isAuthenticated: boolean;
   login: (name: string, email: string) => void;
   logout: () => void;
@@ -36,6 +33,7 @@ type AppContextValue = {
 const defaultProfile: Profile = {
   name: "Azər Həsənov",
   email: "azer@example.com",
+  phone: "+994 51 250 65 65",
   bio: "Premium məzmun seyr edən və dizaynı sevən istifadəçi.",
   avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
   plan: "Premium",
@@ -44,62 +42,67 @@ const defaultProfile: Profile = {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
+function readStored<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const value = window.localStorage.getItem(key);
+    return value === null ? fallback : JSON.parse(value) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("dark");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem("theme") as ThemeMode | null;
-    const storedAuth = window.localStorage.getItem("auth") === "true";
-    const storedFavorites = JSON.parse(window.localStorage.getItem("favorites") || "[]") as string[];
-    const storedWatchlist = JSON.parse(window.localStorage.getItem("watchlist") || "[]") as string[];
-    const storedHistory = JSON.parse(window.localStorage.getItem("history") || "[]") as string[];
-    const storedProfile = JSON.parse(window.localStorage.getItem("profile") || "null") as Profile | null;
-    const storedNotifications = window.localStorage.getItem("notifications") === "true";
-
-    if (storedTheme) setThemeState(storedTheme);
-    if (storedAuth) setIsAuthenticated(true);
-    if (storedFavorites.length) setFavorites(storedFavorites);
-    if (storedWatchlist.length) setWatchlist(storedWatchlist);
-    if (storedHistory.length) setHistory(storedHistory);
-    if (storedProfile) setProfile(storedProfile);
-    setNotificationsEnabled(storedNotifications);
+    startTransition(() => {
+      setIsAuthenticated(readStored("auth", false));
+      setFavorites(readStored("favorites", []));
+      setWatchlist(readStored("watchlist", []));
+      setHistory(readStored("history", []));
+      setProfile(readStored("profile", defaultProfile));
+      setNotificationsEnabled(readStored("notifications", true));
+      setHydrated(true);
+    });
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("auth", String(isAuthenticated));
-  }, [isAuthenticated]);
+  }, [hydrated, isAuthenticated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
+  }, [favorites, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("watchlist", JSON.stringify(watchlist));
-  }, [watchlist]);
+  }, [hydrated, watchlist]);
 
   useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("history", JSON.stringify(history));
-  }, [history]);
+  }, [history, hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("profile", JSON.stringify(profile));
-  }, [profile]);
+  }, [hydrated, profile]);
 
   useEffect(() => {
+    if (!hydrated) return;
     window.localStorage.setItem("notifications", String(notificationsEnabled));
-  }, [notificationsEnabled]);
+  }, [hydrated, notificationsEnabled]);
 
   useEffect(() => {
     if (!toast) return;
@@ -109,8 +112,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<AppContextValue>(
     () => ({
-      theme,
-      setTheme: (nextTheme) => setThemeState(nextTheme),
       isAuthenticated,
       login: (name, email) => {
         setIsAuthenticated(true);
@@ -140,7 +141,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       toast,
       showToast: (message) => setToast(message),
     }),
-    [favorites, history, isAuthenticated, notificationsEnabled, profile, theme, toast, watchlist],
+    [favorites, history, isAuthenticated, notificationsEnabled, profile, toast, watchlist],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

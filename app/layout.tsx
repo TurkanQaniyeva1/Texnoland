@@ -3,10 +3,11 @@ import "./globals.css";
 import { AppProvider } from "@/Components/providers/AppProvider";
 import { SiteHeader } from "@/Components/Layout/SiteHeader";
 import { SiteFooter } from "@/Components/Layout/SiteFooter";
+import { PageTransition } from "@/Components/common/PageTransition";
 
 export const metadata: Metadata = {
-  title: "Texnoland",
-  description: "Premium frontend media experience built with Next.js and mock data",
+  title: { default: "Texnoland | Texnoloji Həllər", template: "%s | Texnoland" },
+  description: "Texnoland elektroenergetika, bərpa olunan enerji, mühəndislik və inşaat həlləri təqdim edir.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <AppProvider>
           <div className="flex min-h-screen flex-col">
             <SiteHeader />
-            <div className="flex-1">{children}</div>
+            <div className="flex-1">
+              <PageTransition>{children}</PageTransition>
+            </div>
             <SiteFooter />
           </div>
         </AppProvider>
