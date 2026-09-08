@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MediaItem } from "@/lib/mockData";
@@ -25,7 +26,9 @@ export function MediaGrid({ title, items, linkHref }: MediaGridProps) {
         {items.map((item, index) => (
           <motion.article key={item.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className="group overflow-hidden rounded-[1.5rem] border border-white/10 bg-slate-900/70 shadow-lg shadow-slate-950/30">
             <div className="relative">
-              <img src={item.image} alt={item.title} className="h-56 w-full object-cover transition duration-500 group-hover:scale-105" />
+              <div className="relative h-56 w-full overflow-hidden">
+                <Image src={item.image} alt={item.title} fill className="object-cover transition duration-500 group-hover:scale-105" sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw" />
+              </div>
               <div className={`absolute inset-0 bg-gradient-to-t ${item.accent} opacity-40`} />
               <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-slate-950/70 px-3 py-1 text-xs uppercase tracking-[0.25em] text-slate-100">{item.category}</div>
             </div>

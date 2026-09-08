@@ -2,7 +2,12 @@
 import React, { useState } from "react";
 import DropdownItem from "./DroopDownItem";
 
-const DropdownMenu = ({ title, items }: any) => {
+type DropdownItemData = {
+  label: string;
+  subItems?: string[];
+};
+
+const DropdownMenu = ({ title, items }: { title: string; items: DropdownItemData[] }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -13,13 +18,13 @@ const DropdownMenu = ({ title, items }: any) => {
     >
       {title}
 
-      {open && (
-        <div className="absolute top-full left-0 w-56 bg-white shadow-lg rounded-md border py-2 z-50">
-          {items.map((item: any, i: number) => (
-            <DropdownItem key={i} item={item} />
+      {open ? (
+        <div className="absolute left-0 top-full z-50 w-56 rounded-md border bg-white py-2 shadow-lg">
+          {items.map((item, i) => (
+            <DropdownItem key={`${item.label}-${i}`} item={item} />
           ))}
         </div>
-      )}
+      ) : null}
     </li>
   );
 };

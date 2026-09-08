@@ -12,8 +12,8 @@ export function Button({ children, href, onClick, variant = "primary", className
   const base = "inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition";
   const variants = {
     primary: "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20 hover:bg-emerald-500",
-    secondary: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-white/10 dark:bg-slate-800 dark:text-slate-100",
-    ghost: "bg-transparent text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10",
+    secondary: "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100",
+    ghost: "bg-transparent text-slate-700 hover:bg-slate-100",
   };
 
   const content = <span className={`${base} ${variants[variant]} ${className}`}>{children}</span>;

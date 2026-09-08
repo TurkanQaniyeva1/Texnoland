@@ -1,135 +1,98 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type Item = {
-  id: string;
-  image: string;
-  title: string;
+id: string;
+image: string;
+title: string;
 };
-const dummyData = [
-  {
-    id: "1",
-    image: "https://images.unsplash.com/photo-1509395176047-4a66953fd231",
-    title: "Günəş Enerjisi Layihəsi",
-  },
-  {
-    id: "2",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    title: "Texnologiya Mərkəzi",
-  },
-  {
-    id: "3",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    title: "Smart Sistemlər",
-  },
-  {
-    id: "4",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
-    title: "Elektrik Layihəsi",
-  },
+
+const dummyData: Item[] = [
+{ id: "1", image: "https://images.unsplash.com/photo-1509395176047-4a66953fd231", title: "Günəş Enerjisi Layihəsi" },
+{ id: "2", image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085", title: "Texnologiya Mərkəzi" },
+{ id: "3", image: "https://images.unsplash.com/photo-1518770660439-4636190af475", title: "Smart Sistemlər" },
+{ id: "4", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b", title: "Elektrik Layihəsi" },
 ];
 
 export default function Portfolio() {
 const [data, setData] = useState<Item[]>(dummyData);
-  const sliderRef = useRef<HTMLDivElement>(null);
+const sliderRef = useRef<HTMLDivElement>(null);
 
-  // 🔥 FETCH FROM FIREBASE
 useEffect(() => {
   const fetchData = async () => {
     try {
       const snapshot = await getDocs(collection(db, "portfolio"));
-      const items = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as any),
-      }));
+      const items = snapshot.docs.map((doc) => {
+        const documentData = doc.data() as Partial<Item>;
+        return {
+          id: doc.id,
+          image: documentData.image ?? "",
+          title: documentData.title ?? "Texnoland layihəsi",
+        } satisfies Item;
+      });
 
       if (items.length > 0) {
         setData(items);
       }
-    } catch (error) {
-      console.log("Firebase yoxdur, dummy işləyir");
+    } catch {
+      // Firebase is optional in this frontend-only build.
     }
   };
 
-  fetchData();
+  void fetchData();
 }, []);
-  // 👉 scroll buttons
-  const scroll = (dir: "left" | "right") => {
-    if (!sliderRef.current) return;
 
-    const width = sliderRef.current.clientWidth;
+const scroll = (dir: "left" | "right") => {
+  if (!sliderRef.current) return;
 
-    sliderRef.current.scrollBy({
-      left: dir === "left" ? -width : width,
-      behavior: "smooth",
-    });
-  };
+  const width = sliderRef.current.clientWidth;
 
-  return (
-    <section className="bg-black text-white py-20 overflow-hidden">
+  sliderRef.current.scrollBy({
+    left: dir === "left" ? -width : width,
+    behavior: "smooth",
+  });
+};
 
-      <div className="max-w-[1200px] mx-auto px-4">
+return (
+  <section className="overflow-hidden bg-black py-20 text-white">
+    <div className="mx-auto max-w-[1200px] px-4">
+      <h2 className="mb-12 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-center text-3xl font-bold text-transparent md:text-5xl">
+        Portfolio
+      </h2>
 
-        {/* TITLE */}
-        <h2 className="text-center text-3xl md:text-5xl font-bold mb-12 bg-gradient-to-r from-cyan-400 to-blue-600 text-transparent bg-clip-text">
-          Portfolio
-        </h2>
+      <div className="relative">
+        <button
+          onClick={() => scroll("left")}
+          className="absolute left-0 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/10 p-3 backdrop-blur-md transition hover:bg-white/20 md:flex"
+        >
+          <FaChevronLeft />
+        </button>
 
-        {/* WRAPPER */}
-        <div className="relative">
+        <button
+          onClick={() => scroll("right")}
+          className="absolute right-0 top-1/2 z-20 hidden -translate-y-1/2 rounded-full bg-white/10 p-3 backdrop-blur-md transition hover:bg-white/20 md:flex"
+        >
+          <FaChevronRight />
+        </button>
 
-          {/* LEFT BUTTON */}
-          <button
-            onClick={() => scroll("left")}
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition"
-          >
-            <FaChevronLeft />
-          </button>
+        <div ref={sliderRef} className="flex cursor-grab gap-5 overflow-x-auto scroll-smooth active:cursor-grabbing">
+          {data.map((item) => (
+            <div key={item.id} className="group relative min-w-[80%] overflow-hidden rounded-xl border border-white/10 sm:min-w-[45%] lg:min-w-[23%]">
+              <Image src={item.image} alt={item.title} width={600} height={350} className="h-[250px] w-full object-cover transition duration-500 group-hover:scale-110" />
 
-          {/* RIGHT BUTTON */}
-          <button
-            onClick={() => scroll("right")}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/10 backdrop-blur-md p-3 rounded-full hover:bg-white/20 transition"
-          >
-            <FaChevronRight />
-          </button>
-
-          {/* SLIDER */}
-          <div
-            ref={sliderRef}
-            className="flex gap-5 overflow-x-auto scroll-smooth no-scrollbar cursor-grab active:cursor-grabbing"
-          >
-
-            {data.map((item) => (
-              <div
-                key={item.id}
-                className="min-w-[80%] sm:min-w-[45%] lg:min-w-[23%] group relative rounded-xl overflow-hidden border border-white/10"
-              >
-
-                {/* IMAGE */}
-                <img
-                  src={item.image}
-                  className="w-full h-[250px] object-cover group-hover:scale-110 transition duration-500"
-                />
-
-                {/* OVERLAY */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-center px-3">
-                  <p className="text-sm text-white font-medium">
-                    {item.title}
-                  </p>
-                </div>
-
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 px-3 text-center opacity-0 transition group-hover:opacity-100">
+                <p className="text-sm font-medium text-white">{item.title}</p>
               </div>
-            ))}
-
-          </div>
+            </div>
+          ))}
         </div>
-
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

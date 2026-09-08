@@ -19,18 +19,50 @@ export type ReviewItem = {
 
 export const services: ServiceItem[] = [
   { title: "Bərpa Olunan Enerji Sistemlərinin Quraşdırılması", description: "Günəş enerjisi və digər bərpa olunan mənbələrin səmərəli tətbiqi üçün texniki həllər.", icon: "energy" },
+  { title: "Günəş panellərinin quraşdırılması", description: "Mütəxəssis komandamız tərəfindən yüksək məhsuldarlıq və uzunömürlü təsir göstərən fotovoltaik sistemlər qururuq.", icon: "energy" },
+  { title: "Külək turbinlərinin quraşdırılması", description: "Ağır hava şəraitinə qarşı etibarlı, ölçü və texniki tələblərə uyğun külək enerjisi çözümləri.", icon: "grid" },
+  { title: "Günəş enerjili işıqlandırma dirəkləri", description: "Məsafə və işıqlandırma ehtiyaclarına uyğun günəş enerjili infrastrukturlar.", icon: "meter" },
+  { title: "Günəş enerjili suvarma sistemləri", description: "Sahə suvarma ehtiyaclarını optimallaşdıran avtomatlaşdırılmış həllər.", icon: "service" },
+  { title: "Günəş elektrik stansiyalarına servis", description: "Texniki monitorinq, preventiv xidmət və enerji sistemlərinin davamlılığı.", icon: "service" },
   { title: "Elektrik Şəbəkə və Yarımstansiyaların Qurulması", description: "Alçaq, orta və yüksək gərginlikli şəbəkələrin layihələndirilməsi və həyata keçirilməsi.", icon: "grid" },
+  { title: "Yüksək gərginlikli şəbəkələr", description: "Yüksək gərginlikli elektrik ötürmə və paylama mexanizmlərinin layihələndirilməsi.", icon: "grid" },
+  { title: "Alçaq gərginlikli şəbəkələr", description: "Doğrudan istifadəçilərə xidmət edən nöqtələrdə etibarlı paylama həlləri.", icon: "grid" },
+  { title: "Elektrik şəbəkələrinin qurulması", description: "Şəbəkə təminatı, kadrlaşdırma və obyektin enerjisini tam şəkildə yükləmək üçün həllər.", icon: "grid" },
   { title: "Mühəndis Kommunikasiya İşləri", description: "Böyük layihələrdə rabitə, nəzarət və avtomatlaşdırma sistemlərinin inteqrasiyası.", icon: "network" },
+  { title: "Binalarda mühəndis kommunikasiya işləri", description: "Bina daxilində rabitə, idarəetmə və təhlükəsizlik sistemlərinin quraşdırılması.", icon: "network" },
+  { title: "Ağıllı şəbəkə və avtomatlaşdırma", description: "Enerji, monitoring və kontrol proseslərini tam avtomatlaşdırmağa yönəlik həllər.", icon: "network" },
   { title: "Servis və Məsləhət Xidmətləri", description: "İstismarda olan sistemlərin preventive baxımı və dayanıqlığının artırılması.", icon: "service" },
+  { title: "1000 V-a qədər ölçü və sınaq", description: "Təhlükəsizlik, uyğunluq və performans yoxlamaları üçün dəqiq ölçmə xidmətləri.", icon: "audit" },
+  { title: "Layihələndirmə və qiymətləndirmə", description: "Texniki, iqtisadi və həyata keçirilməsi baxımından obyekt üçün optimal qiymətləndirmə.", icon: "audit" },
+  { title: "Mühəndis axtarışları və texniki məsləhət", description: "Layihələrin mürəkkəblik dərəcəsinə uyğun, mütəxəssis dəstək və axtarış xidmətləri.", icon: "service" },
   { title: "İnşaat İşləri", description: "Fərdi yaşayış evləri və ofislərin müasir dizayn dilində inşa edilməsi.", icon: "building" },
+  { title: "Fərdi mənzil inşaatı", description: "Aylıq və mərhələli inşaat planlaşdırması ilə yaşayış məqsədli obyektlərin qurulması.", icon: "building" },
+  { title: "Yaşayış və qeyri-yaşayış sahələrinin təmiri", description: "Mühəndislik, elektrik və kommunikasiya sistemlərinin kompleks təmiri və yenidənqurulması.", icon: "building" },
   { title: "Enerji Auditi", description: "Enerji itkisini müəyyən etmək və optimallaşdırma yollarını təklif etmək.", icon: "audit" },
-  { title: "Elektrik və İstilik Sayğaclarının Quraşdırılması", description: "Dəqiq ölçmə və enerji monitorinqi üçün müasir sayğac həlləri.", icon: "meter" },
+  { title: "Elektrik və istilik sayğaclarının quraşdırılması", description: "Dəqiq ölçmə və enerji monitorinqi üçün müasir sayğac həlləri.", icon: "meter" },
 ];
 
 export const projects: ProjectItem[] = [
   { title: "Bakı Enerji Kompleksi", location: "Bakı", description: "Müasir yarımstansiya və elektrik şəbəkəsi layihəsi.", year: "2024" },
   { title: "Abşeron Solar Park", location: "Abşeron", description: "Bərpa olunan enerji obyektinin nəzərdə tutulan inteqrasiyası.", year: "2023" },
   { title: "Nərimanov İnşaat Həlli", location: "Nərimanov", description: "Ofis binaları üçün mühəndislik və inşaat dəstəyi.", year: "2022" },
+  { title: "Qaradağ Mühəndis Kompaksiyası", location: "Qaradağ", description: "Yüksək güclü şəbəkə və monitorinq sistemləri üçün kompleks həllər.", year: "2024" },
+  { title: "Sumqayıt Günəş Enerji Parkı", location: "Sumqayıt", description: "Daimi enerjidəyişikliklərə uyğun modern günəş enerjisi obyekti.", year: "2023" },
+  { title: "Şəki İnfrastruktur Layihəsi", location: "Şəki", description: "İctimai və yaşayış zonalarında elektrik və infrastruktur dəstəyi.", year: "2022" },
+];
+
+export const portfolioItems = [
+  { id: "solar-farm", title: "Günəş elektr stansiyası", image: "https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=1200&q=80" },
+  { id: "smart-grid", title: "Ağıllı şəbəkə", image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80" },
+  { id: "energy-center", title: "Enerji mərkəzi", image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" },
+  { id: "infrastructure", title: "İnfrastruktur", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80" },
+];
+
+export const newsArticles = [
+  { id: "innovation-1", title: "Günəş enerjisi ilə yeni istehsal həlli", category: "Texnoloji yeniliklər", date: "14 Aprel 2026", description: "Enerji istehsalını optimallaşdıran sürətli və səmərəli müasir yanaşma." },
+  { id: "innovation-2", title: "Ağıllı şəbəkə monitorinqi", category: "İnnovasiya", date: "03 Mart 2026", description: "Realtim monitorinq və avtomatlaşdırma ilə qazancların artımı." },
+  { id: "innovation-3", title: "Davamlı infrastruktur layihələri", category: "Sərmayə", date: "18 Fevral 2026", description: "Gələcək nəsillər üçün daha dayanıqlı və təhlükəsiz infrastrukturlar yaratmaq." },
+  { id: "innovation-4", title: "Enerji auditinin iqtisadi faydası", category: "Audit", date: "09 Yanvar 2026", description: "Müəssisələrdə enerjiyə qənaət edən sistemlərin reallığı və faydalılığı." },
 ];
 
 export const stats = [
@@ -62,18 +94,19 @@ export const faqItems = [
 ];
 
 export const navItems = [
-  { label: "Ana səhifə", href: "/" },
-  { label: "Haqqımızda", href: "/about" },
+  { label: "Əsas səhifə", href: "/" },
   { label: "Xidmətlər", href: "/services" },
   { label: "Layihələr", href: "/projects" },
-  { label: "Sertifikatlar", href: "/certificates" },
+  { label: "Şirkətimiz", href: "/about" },
+  { label: "Məlumatlar", href: "/faq" },
+  { label: "Təklif alın", href: "/quote" },
   { label: "Əlaqə", href: "/contact" },
 ];
 
 export const footerLinks = [
-  { title: "Şirkət", items: [{ label: "Haqqımızda", href: "/about" }, { label: "FAQ", href: "/faq" }] },
-  { title: "Xidmətlər", items: [{ label: "Xidmətlər", href: "/services" }, { label: "Layihələr", href: "/projects" }] },
-  { title: "Əlaqə", items: [{ label: "Əlaqə", href: "/contact" }, { label: "Sertifikatlar", href: "/certificates" }] },
+  { title: "Şirkət", items: [{ label: "Haqqımızda", href: "/about" }, { label: "FAQ", href: "/faq" }, { label: "Təklif alın", href: "/quote" }] },
+  { title: "Xidmətlər", items: [{ label: "Xidmətlər", href: "/services" }, { label: "Layihələr", href: "/projects" }, { label: "Günəş kalkulyatoru", href: "/calculator" }] },
+  { title: "Əlaqə", items: [{ label: "Əlaqə", href: "/contact" }, { label: "Məlumatlar", href: "/faq" }, { label: "Profil", href: "/profile" }] },
 ];
 
 export type MediaItem = {

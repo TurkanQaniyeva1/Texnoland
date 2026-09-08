@@ -1,31 +1,33 @@
 "use client";
 import React from "react";
 
+type MegaMenuItem = {
+  name: string;
+  children?: string[];
+};
+
 type Props = {
-  data: any[];
+  data: MegaMenuItem[];
 };
 
 const MegaMenu = ({ data }: Props) => {
   return (
-    <div className="absolute top-full left-0 hidden group-hover:block bg-white shadow-xl rounded-md min-w-[220px] z-50">
+    <div className="absolute left-0 top-full z-50 hidden min-w-[220px] rounded-md bg-white shadow-xl group-hover:block">
       {data.map((item, index) => (
-        <div key={index} className="relative group/item">
-          
-          <div className="px-4 py-2 hover:bg-gray-100 cursor-pointer whitespace-nowrap">
+        <div key={`${item.name}-${index}`} className="group/item relative">
+          <div className="cursor-pointer whitespace-nowrap px-4 py-2 hover:bg-gray-100">
             {item.name}
           </div>
 
-          {/* SUBMENU (ilk 5 üçün) */}
-          {index < 5 && item.children && (
-            <div className="absolute top-0 left-full hidden group-hover/item:block bg-white shadow-xl rounded-md min-w-[200px]">
-              {item.children.map((sub: string, i: number) => (
-                <div key={i} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+          {index < 5 && item.children ? (
+            <div className="absolute left-full top-0 hidden min-w-[200px] rounded-md bg-white shadow-xl group-hover/item:block">
+              {item.children.map((sub, i) => (
+                <div key={`${sub}-${i}`} className="cursor-pointer px-4 py-2 hover:bg-gray-100">
                   {sub}
                 </div>
               ))}
             </div>
-          )}
-
+          ) : null}
         </div>
       ))}
     </div>

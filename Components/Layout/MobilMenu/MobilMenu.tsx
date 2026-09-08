@@ -1,19 +1,33 @@
 "use client";
 import React, { useState } from "react";
 
-const MobileMenu = ({ isOpen, onClose, data }: any) => {
+type MobileMenuItem = {
+  label: string;
+};
+
+type MobileMenuData = Record<string, MobileMenuItem[]>;
+
+const MobileMenu = ({
+  isOpen,
+  onClose,
+  data,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  data: MobileMenuData;
+}) => {
   const [open, setOpen] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
 
-      <div className="fixed right-0 top-0 w-80 h-full bg-white z-50 p-4">
+      <div className="fixed right-0 top-0 z-50 h-full w-80 bg-white p-4">
         <button onClick={onClose}>X</button>
 
-        {Object.entries(data).map(([key, items]: any) => (
+        {Object.entries(data).map(([key, items]) => (
           <div key={key}>
             <div
               onClick={() => setOpen(open === key ? null : key)}
@@ -22,12 +36,13 @@ const MobileMenu = ({ isOpen, onClose, data }: any) => {
               {key}
             </div>
 
-            {open === key &&
-              items.map((item: any, i: number) => (
-                <div key={i} className="pl-4 text-sm py-1">
-                  {item.label}
-                </div>
-              ))}
+            {open === key
+              ? items.map((item, i) => (
+                  <div key={`${item.label}-${i}`} className="py-1 pl-4 text-sm">
+                    {item.label}
+                  </div>
+                ))
+              : null}
           </div>
         ))}
       </div>

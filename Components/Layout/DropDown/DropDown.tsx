@@ -1,19 +1,23 @@
 "use client";
 import React from "react";
 
+type DropdownItem = {
+  name: string;
+};
+
 type Props = {
   title: string;
-  data: any[];
+  data: DropdownItem[];
 };
 
 const Dropdown = ({ title, data }: Props) => {
   return (
-    <li className="relative group cursor-pointer">
+    <li className="group relative cursor-pointer">
       {title}
 
-      <div className="absolute top-full left-0 hidden group-hover:block bg-white shadow-xl rounded-md min-w-[200px] z-50">
+      <div className="absolute left-0 top-full z-50 hidden min-w-[200px] rounded-md bg-white shadow-xl group-hover:block">
         {data.map((item, i) => (
-          <div key={i} className="px-4 py-2 hover:bg-gray-100">
+          <div key={`${item.name}-${i}`} className="px-4 py-2 hover:bg-gray-100">
             {item.name}
           </div>
         ))}

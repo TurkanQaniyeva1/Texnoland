@@ -10,9 +10,9 @@ export function SectionHeading({ eyebrow, title, description, align = "left" }: 
 
   return (
     <div className={`max-w-3xl ${alignment}`}>
-      <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600 dark:text-emerald-400">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white sm:text-4xl">{title}</h2>
-      {description ? <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-400">{description}</p> : null}
+      <p className="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-600">{eyebrow}</p>
+      <h2 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">{title}</h2>
+      {description ? <p className="mt-4 text-lg leading-8 text-slate-600">{description}</p> : null}
     </div>
   );
 }

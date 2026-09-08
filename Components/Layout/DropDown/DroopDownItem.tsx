@@ -2,23 +2,28 @@
 import React, { useState } from "react";
 import SubMenu from "./SubMenu";
 
-const DropdownItem = ({ item }: any) => {
+type DropdownItemData = {
+  label: string;
+  subItems?: string[];
+};
+
+const DropdownItem = ({ item }: { item: DropdownItemData }) => {
   const [hover, setHover] = useState(false);
 
   return (
     <div
-      className="relative px-4 py-2 text-sm hover:bg-gray-100 flex justify-between items-center cursor-pointer"
+      className="relative flex cursor-pointer items-center justify-between px-4 py-2 text-sm hover:bg-gray-100"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       {item.label}
 
-      {item.subItems && (
+      {item.subItems ? (
         <>
           <span>›</span>
-          {hover && <SubMenu items={item.subItems} />}
+          {hover ? <SubMenu items={item.subItems} /> : null}
         </>
-      )}
+      ) : null}
     </div>
   );
 };
