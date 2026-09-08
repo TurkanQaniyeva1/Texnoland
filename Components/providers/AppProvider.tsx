@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, startTransition, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type Profile = {
   name: string;
@@ -14,7 +14,7 @@ type Profile = {
 
 type AppContextValue = {
   isAuthenticated: boolean;
-  login: (name: string, email: string) => void;
+  login: (name: string, email: string, phone?: string) => void;
   logout: () => void;
   favorites: string[];
   toggleFavorite: (id: string) => void;
@@ -33,7 +33,7 @@ type AppContextValue = {
 const defaultProfile: Profile = {
   name: "Azər Həsənov",
   email: "azer@example.com",
-  phone: "+994 51 250 65 65",
+  phone: "+994 50 123 45 67",
   bio: "Premium məzmun seyr edən və dizaynı sevən istifadəçi.",
   avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
   plan: "Premium",
@@ -42,67 +42,57 @@ const defaultProfile: Profile = {
 
 const AppContext = createContext<AppContextValue | null>(null);
 
-function readStored<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const value = window.localStorage.getItem(key);
-    return value === null ? fallback : JSON.parse(value) as T;
-  } catch {
-    return fallback;
-  }
-}
-
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [watchlist, setWatchlist] = useState<string[]>([]);
-  const [history, setHistory] = useState<string[]>([]);
-  const [profile, setProfile] = useState<Profile>(defaultProfile);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [hydrated, setHydrated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("auth") === "true";
+  });
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return JSON.parse(window.localStorage.getItem("favorites") || "[]") as string[];
+  });
+  const [watchlist, setWatchlist] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return JSON.parse(window.localStorage.getItem("watchlist") || "[]") as string[];
+  });
+  const [history, setHistory] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return JSON.parse(window.localStorage.getItem("history") || "[]") as string[];
+  });
+  const [profile, setProfile] = useState<Profile>(() => {
+    if (typeof window === "undefined") return defaultProfile;
+    const storedProfile = JSON.parse(window.localStorage.getItem("profile") || "null") as Profile | null;
+    return storedProfile ?? defaultProfile;
+  });
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("notifications") === "true";
+  });
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    startTransition(() => {
-      setIsAuthenticated(readStored("auth", false));
-      setFavorites(readStored("favorites", []));
-      setWatchlist(readStored("watchlist", []));
-      setHistory(readStored("history", []));
-      setProfile(readStored("profile", defaultProfile));
-      setNotificationsEnabled(readStored("notifications", true));
-      setHydrated(true);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("auth", String(isAuthenticated));
-  }, [hydrated, isAuthenticated]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites, hydrated]);
+  }, [favorites]);
 
   useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("watchlist", JSON.stringify(watchlist));
-  }, [hydrated, watchlist]);
+  }, [watchlist]);
 
   useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("history", JSON.stringify(history));
-  }, [history, hydrated]);
+  }, [history]);
 
   useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("profile", JSON.stringify(profile));
-  }, [hydrated, profile]);
+  }, [profile]);
 
   useEffect(() => {
-    if (!hydrated) return;
     window.localStorage.setItem("notifications", String(notificationsEnabled));
-  }, [hydrated, notificationsEnabled]);
+  }, [notificationsEnabled]);
 
   useEffect(() => {
     if (!toast) return;
@@ -113,9 +103,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AppContextValue>(
     () => ({
       isAuthenticated,
-      login: (name, email) => {
+      login: (name, email, phone) => {
         setIsAuthenticated(true);
-        setProfile((current) => ({ ...current, name, email }));
+        setProfile((current) => ({ ...current, name, email, phone: phone ?? current.phone }));
         setToast("Hesabınıza daxil olundu.");
       },
       logout: () => {

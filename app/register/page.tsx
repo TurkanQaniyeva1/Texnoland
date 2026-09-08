@@ -1,271 +1,165 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { FiEye, FiEyeOff, FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
+import { FiEye, FiEyeOff, FiMail, FiPhone, FiUser } from "react-icons/fi";
 import { useApp } from "@/Components/providers/AppProvider";
 
 export default function RegisterPage() {
-  const { login, showToast } = useApp();
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+  const { login } = useApp();
+  const [form, setForm] = useState({
     fullName: "",
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
+    acceptedTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  const getPasswordStrength = (pass: string) => {
-    if (!pass) return 0;
-    let strength = 0;
-    if (pass.length >= 8) strength++;
-    if (/[a-z]/.test(pass) && /[A-Z]/.test(pass)) strength++;
-    if (/[0-9]/.test(pass)) strength++;
-    if (/[^a-zA-Z0-9]/.test(pass)) strength++;
-    return strength;
+  const passwordStrength = useMemo(() => {
+    if (form.password.length === 0) return { label: "", score: 0 };
+    if (form.password.length < 6) return { label: "Zaif", score: 1 };
+    if (form.password.length < 10) return { label: "Orta", score: 2 };
+    return { label: "Güclü", score: 3 };
+  }, [form.password]);
+
+  const handleChange = (field: keyof typeof form, value: string | boolean) => {
+    setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Ad və soyad tələb olunur";
+    const requiredFields = [form.fullName, form.email, form.phone, form.password, form.confirmPassword];
+    if (requiredFields.some((value) => !value.trim())) {
+      setStatus("error");
+      setMessage("Bütün sahələr doldurulmalıdır.");
+      return;
     }
 
-    if (!formData.email) {
-      newErrors.email = "E-poçt tələb olunur";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Düzgün e-poçt daxil edin";
+    if (!form.email.includes("@")) {
+      setStatus("error");
+      setMessage("E-poçt ünvanı düzgün deyil.");
+      return;
     }
 
-    if (!formData.phone) {
-      newErrors.phone = "Telefon nömrəsi tələb olunur";
+    if (form.password.length < 6) {
+      setStatus("error");
+      setMessage("Şifrə ən azı 6 simvol olmalıdır.");
+      return;
     }
 
-    if (!formData.password) {
-      newErrors.password = "Şifrə tələb olunur";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Şifrə ən az 6 simvol olmalıdır";
+    if (form.password !== form.confirmPassword) {
+      setStatus("error");
+      setMessage("Şifrələr uyğun gəlmir.");
+      return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Şifrələr eyni deyil";
+    if (!form.acceptedTerms) {
+      setStatus("error");
+      setMessage("Şərtləri qəbul etməlisiniz.");
+      return;
     }
 
-    if (!agreeTerms) {
-      newErrors.terms = "Şərtlərə razı olmaq tələb olunur";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setStatus("success");
+    setMessage("Hesab uğurla yaradıldı.");
+    login(form.fullName, form.email, form.phone);
+    setTimeout(() => router.push("/profile"), 600);
   };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    login(formData.fullName, formData.email);
-    showToast("Hesabınız uğurla yaradıldı!");
-
-    setLoading(false);
-    window.location.href = "/profile";
-  };
-
-  const passwordStrength = getPasswordStrength(formData.password);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mx-auto w-full max-w-2xl px-4"
-      >
-        <div className="space-y-8 rounded-2xl border border-white/10 bg-slate-900/70 p-8 shadow-2xl lg:p-12">
-          <div>
-            <h1 className="text-3xl font-semibold">Yeni hesab yaradın</h1>
-            <p className="mt-2 text-slate-400">
-              Artıq hesabınız var?{" "}
-              <Link href="/login" className="font-semibold text-emerald-400 hover:text-emerald-300">
-                Daxil ol
-              </Link>
-            </p>
+    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-16 text-slate-100 lg:px-8">
+      <div className="w-full max-w-5xl overflow-hidden rounded-[2rem] border border-slate-200/10 bg-slate-900/80 shadow-2xl shadow-slate-950/30">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="hidden bg-gradient-to-br from-emerald-600 via-cyan-600 to-blue-700 p-10 text-white lg:flex lg:flex-col lg:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-cyan-100/90">Texnoland</p>
+              <h1 className="mt-6 text-4xl font-semibold leading-tight">Güclü layihələr üçün doğru addım.</h1>
+            </div>
+            <div className="rounded-[1.5rem] border border-white/20 bg-white/10 p-5 backdrop-blur-sm">
+              <p className="text-sm text-cyan-50/80">Kəmiyyətli enerji sistemləri</p>
+              <p className="mt-2 text-2xl font-semibold">Etibarlı, peşəkar və davamlı</p>
+            </div>
           </div>
 
-          <div className="space-y-5">
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Ad və Soyad</label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={(e) => {
-                  setFormData({ ...formData, fullName: e.target.value });
-                  if (errors.fullName) setErrors({ ...errors, fullName: "" });
-                }}
-                placeholder="Azər Həsənov"
-                className={`w-full rounded-xl border px-4 py-3 bg-slate-900/50 text-white placeholder-slate-500 outline-none transition ${errors.fullName ? "border-red-500/50" : "border-white/10 focus:border-emerald-400"}`}
-              />
-              {errors.fullName && <p className="mt-1 text-sm text-red-400">{errors.fullName}</p>}
-            </div>
+          <div className="p-8 lg:p-12">
+            <p className="text-sm uppercase tracking-[0.35em] text-cyan-400">Hesab yarat</p>
+            <h2 className="mt-3 text-3xl font-semibold text-white">Yeni hesab</h2>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">E-poçt</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => {
-                  setFormData({ ...formData, email: e.target.value });
-                  if (errors.email) setErrors({ ...errors, email: "" });
-                }}
-                placeholder="siz@nümunə.com"
-                className={`w-full rounded-xl border px-4 py-3 bg-slate-900/50 text-white placeholder-slate-500 outline-none transition ${errors.email ? "border-red-500/50" : "border-white/10 focus:border-emerald-400"}`}
-              />
-              {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
-            </div>
+            <form className="mt-8 space-y-5" onSubmit={handleSubmit} noValidate>
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="block text-sm text-slate-300 md:col-span-2">
+                  <span className="mb-2 flex items-center gap-2"><FiUser /> Ad və Soyad</span>
+                  <input value={form.fullName} onChange={(event) => handleChange("fullName", event.target.value)} className="w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400" placeholder="Ad və soyad" />
+                </label>
 
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Telefon</label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => {
-                  setFormData({ ...formData, phone: e.target.value });
-                  if (errors.phone) setErrors({ ...errors, phone: "" });
-                }}
-                placeholder="(050) 123-45-67"
-                className={`w-full rounded-xl border px-4 py-3 bg-slate-900/50 text-white placeholder-slate-500 outline-none transition ${errors.phone ? "border-red-500/50" : "border-white/10 focus:border-emerald-400"}`}
-              />
-              {errors.phone && <p className="mt-1 text-sm text-red-400">{errors.phone}</p>}
-            </div>
+                <label className="block text-sm text-slate-300">
+                  <span className="mb-2 flex items-center gap-2"><FiMail /> E-poçt</span>
+                  <input value={form.email} onChange={(event) => handleChange("email", event.target.value)} type="email" className="w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400" placeholder="nümunə@email.com" />
+                </label>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Şifrə</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) => {
-                    setFormData({ ...formData, password: e.target.value });
-                    if (errors.password) setErrors({ ...errors, password: "" });
-                  }}
-                  placeholder="••••••••"
-                  className={`w-full rounded-xl border px-4 py-3 bg-slate-900/50 text-white placeholder-slate-500 outline-none transition ${errors.password ? "border-red-500/50" : "border-white/10 focus:border-emerald-400"}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
-                >
-                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                </button>
-              </div>
-              {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
+                <label className="block text-sm text-slate-300">
+                  <span className="mb-2 flex items-center gap-2"><FiPhone /> Telefon</span>
+                  <input value={form.phone} onChange={(event) => handleChange("phone", event.target.value)} className="w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-400" placeholder="+994 xx xxx xx xx" />
+                </label>
 
-              {/* Password strength indicator */}
-              {formData.password && (
-                <div className="mt-3 space-y-2">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className={`h-1.5 flex-1 rounded-full transition ${i <= passwordStrength ? "bg-emerald-500" : "bg-slate-700"}`}
-                      />
-                    ))}
+                <label className="block text-sm text-slate-300 relative">
+                  <span className="mb-2 block">Şifrə</span>
+                  <div className="relative">
+                    <input value={form.password} onChange={(event) => handleChange("password", event.target.value)} type={showPassword ? "text" : "password"} className="w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-3 pr-12 text-slate-100 outline-none transition focus:border-cyan-400" placeholder="Şifrə" />
+                    <button type="button" onClick={() => setShowPassword((current) => !current)} className="absolute inset-y-0 right-3 flex items-center text-slate-400">{showPassword ? <FiEyeOff /> : <FiEye />}</button>
                   </div>
-                  <p className="text-xs text-slate-400">
-                    {passwordStrength === 1 && "Zəif şifrə"}
-                    {passwordStrength === 2 && "Orta şifrə"}
-                    {passwordStrength === 3 && "Güclü şifrə"}
-                    {passwordStrength === 4 && "Çox güclü şifrə"}
-                  </p>
-                </div>
-              )}
-            </div>
+                </label>
 
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Şifrəni təsdiqlə</label>
-              <div className="relative">
-                <input
-                  type={showConfirm ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={(e) => {
-                    setFormData({ ...formData, confirmPassword: e.target.value });
-                    if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
-                  }}
-                  placeholder="••••••••"
-                  className={`w-full rounded-xl border px-4 py-3 bg-slate-900/50 text-white placeholder-slate-500 outline-none transition ${errors.confirmPassword ? "border-red-500/50" : "border-white/10 focus:border-emerald-400"}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
-                >
-                  {showConfirm ? <FiEyeOff size={18} /> : <FiEye size={18} />}
-                </button>
-              </div>
-              {errors.confirmPassword && <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>}
-            </div>
-
-            {/* Terms checkbox */}
-            <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-slate-900/30 p-4">
-              <input
-                type="checkbox"
-                checked={agreeTerms}
-                onChange={(e) => {
-                  setAgreeTerms(e.target.checked);
-                  if (errors.terms) setErrors({ ...errors, terms: "" });
-                }}
-                className="mt-1 h-4 w-4 cursor-pointer rounded border-white/10 bg-slate-900 text-emerald-500 accent-emerald-500"
-              />
-              <div className="flex-1">
-                <label className="cursor-pointer text-sm text-slate-300">
-                  <Link href="/terms" className="font-semibold text-emerald-400 hover:text-emerald-300">
-                    Xidmət şərtləri
-                  </Link>{" "}
-                  və{" "}
-                  <Link href="/privacy" className="font-semibold text-emerald-400 hover:text-emerald-300">
-                    Gizlilik siyasəti
-                  </Link>{" "}
-                  ilə razıyam
+                <label className="block text-sm text-slate-300 relative">
+                  <span className="mb-2 block">Şifrəni təsdiqlə</span>
+                  <div className="relative">
+                    <input value={form.confirmPassword} onChange={(event) => handleChange("confirmPassword", event.target.value)} type={showConfirmPassword ? "text" : "password"} className="w-full rounded-2xl border border-slate-700 bg-slate-950/60 px-4 py-3 pr-12 text-slate-100 outline-none transition focus:border-cyan-400" placeholder="Şifrəni təkrar edin" />
+                    <button type="button" onClick={() => setShowConfirmPassword((current) => !current)} className="absolute inset-y-0 right-3 flex items-center text-slate-400">{showConfirmPassword ? <FiEyeOff /> : <FiEye />}</button>
+                  </div>
                 </label>
               </div>
-            </div>
-            {errors.terms && <p className="text-sm text-red-400">{errors.terms}</p>}
-          </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !agreeTerms}
-            className="w-full rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-slate-950 transition hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {loading ? "Yaradılır..." : "Hesab yarat"}
-            {!loading && <FiArrowRight />}
-          </button>
+              {form.password ? (
+                <div className="rounded-2xl border border-slate-700 bg-slate-950/40 p-3 text-sm text-slate-300">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span>Şifrə gücü</span>
+                    <span className="text-cyan-400">{passwordStrength.label}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-gradient-to-r from-amber-400 via-cyan-500 to-emerald-500 transition-all" style={{ width: `${(passwordStrength.score / 3) * 100}%` }} />
+                  </div>
+                </div>
+              ) : null}
 
-          <div className="rounded-xl bg-emerald-500/10 p-4 border border-emerald-500/20">
-            <div className="flex gap-3">
-              <FiCheckCircle className="text-emerald-400 flex-shrink-0 mt-1" />
-              <div className="text-sm">
-                <p className="font-semibold text-emerald-300">Dəyəri bilin</p>
-                <p className="mt-1 text-emerald-200/70">Bu frontend demo formasıdır. Həqiqi server tərəfindən istifadə olunmur.</p>
-              </div>
+              <label className="flex items-start gap-3 rounded-2xl border border-slate-700 bg-slate-950/40 p-3 text-sm text-slate-300">
+                <input type="checkbox" checked={form.acceptedTerms} onChange={(event) => handleChange("acceptedTerms", event.target.checked)} className="mt-1 h-4 w-4 rounded border-slate-600 bg-slate-900" />
+                <span>Şərtləri və gizlilik siyasətini qəbul edirəm.</span>
+              </label>
+
+              {status !== "idle" ? (
+                <div className={`rounded-2xl border px-4 py-3 text-sm ${status === "success" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border-red-500/30 bg-red-500/10 text-red-300"}`}>
+                  {message}
+                </div>
+              ) : null}
+
+              <button type="submit" className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white transition hover:opacity-95">
+                Hesab yarat
+              </button>
+            </form>
+
+            <div className="mt-6 text-sm text-slate-400">
+              Artıq hesabınız var? <Link href="/login" className="font-medium text-cyan-400 hover:text-cyan-300">Daxil ol</Link>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </main>
   );
 }
